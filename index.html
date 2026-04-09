@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DriftTogether</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div id="app">
+
+    <!-- ═══ TONIGHT TAB ═══ -->
+    <section id="tab-tonight" class="tab active">
+
+      <!-- Home -->
+      <div id="tonight-home" class="state active">
+        <div class="spacer"></div>
+        <div class="center">
+          <h1 class="logo"><em>DriftTogether</em></h1>
+          <p class="eyebrow">Bedtime Ritual</p>
+        </div>
+        <div class="tonight-action">
+          <button class="btn-pill" id="btn-begin"><span>Begin Tonight</span></button>
+          <p class="ritual-meta"><em>15 minutes &bull; Guided Connection</em></p>
+          <div class="tonight-phase" id="tonight-phase"></div>
+        </div>
+        <div class="spacer"></div>
+      </div>
+
+      <!-- Ready Check -->
+      <div id="tonight-ready" class="state">
+        <div class="state-scroll">
+          <div class="ready-header">
+            <button class="btn-back" id="ready-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+            <h2>Settling In</h2>
+          </div>
+          <p class="ready-sub">A gentle nudge, not a gate. Skip anything.</p>
+          <div class="checklist" id="checklist">
+            <label class="check-item"><input type="checkbox" data-item="phones"><span class="check-box"></span><span class="check-label">Phones away</span><span class="check-hint">Gene's in another room. Yours goes down after we start.</span></label>
+            <label class="check-item"><input type="checkbox" data-item="temp"><span class="check-box"></span><span class="check-label">Temperature set</span><span class="check-hint">65-68°F is the sweet spot.</span></label>
+            <label class="check-item"><input type="checkbox" data-item="magnesium"><span class="check-box"></span><span class="check-label">Magnesium taken</span><span class="check-hint">200-400mg glycinate at bedtime.</span></label>
+            <label class="check-item"><input type="checkbox" data-item="duvets"><span class="check-box"></span><span class="check-label">Separate duvets</span><span class="check-hint">Your own space within shared space.</span></label>
+            <label class="check-item"><input type="checkbox" data-item="screens"><span class="check-box"></span><span class="check-label">Screens off 60+ min</span><span class="check-hint">Gene's system needs real wind-down time.</span></label>
+            <label class="check-item"><input type="checkbox" data-item="decompress"><span class="check-box"></span><span class="check-label">Decompression done</span><span class="check-hint">90-120 min buffer for an HSP nervous system.</span></label>
+            <label class="check-item"><input type="checkbox" data-item="sound"><span class="check-box"></span><span class="check-label">Sound set</span><span class="check-hint">White noise, silence, or whatever works.</span></label>
+          </div>
+          <button class="btn-pill btn-start" id="btn-start-ritual"><span>Start Ritual</span></button>
+        </div>
+      </div>
+
+      <!-- Ritual -->
+      <div id="tonight-ritual" class="state">
+        <div class="ritual-top">
+          <div class="ritual-ring-wrap">
+            <svg class="ritual-ring" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+              <circle id="ring-progress" cx="18" cy="18" r="16" fill="none" stroke="rgba(232,228,240,0.5)" stroke-width="2" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" transform="rotate(-90 18 18)"/>
+            </svg>
+          </div>
+          <div class="ritual-phase-name" id="phase-name">Playing</div>
+          <button class="ritual-exit" id="btn-exit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="ritual-center">
+          <div class="breathing-orb" id="breathing-orb"></div>
+          <p class="ritual-instruction" id="ritual-instruction">Put the phone face-down between you.</p>
+        </div>
+        <div class="ritual-bottom">
+          <div class="ritual-timer" id="ritual-timer">0:00</div>
+          <button class="btn-circle" id="btn-pause">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" id="pause-icon"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Post-Ritual -->
+      <div id="tonight-post" class="state">
+        <div class="spacer"></div>
+        <div class="center">
+          <p class="post-title"><em>The ritual is complete.</em></p>
+          <p class="post-sub">Whatever happens tonight is fine.<br>You're not trying to sleep. Just resting beside each other.</p>
+        </div>
+        <div class="tonight-action">
+          <button class="btn-pill" id="btn-goodnight"><span>Goodnight</span></button>
+          <details class="post-expand" id="post-expand">
+            <summary>If Sleep Doesn't Come</summary>
+            <div class="post-body">
+              <h4>The 20-Minute Rule</h4>
+              <p>If roughly 20 minutes pass and you're clearly awake — get up. Go to the couch, read a physical book, no screens. Come back when your eyelids get heavy.</p>
+              <h4>Gene</h4>
+              <p>Stay. Be still. Breathe normally. Don't ask questions. Don't follow. When she comes back, your calm unbothered presence is the most powerful signal.</p>
+              <h4>Courtney</h4>
+              <p>Getting up is the correct action. It breaks the arousal association. Coming back to Gene still there, still calm, is reconditioning. Each return trip rewrites the pattern.</p>
+              <button class="btn-text" id="btn-play-20min">Listen to the 20-Minute Rule guide</button>
+            </div>
+          </details>
+        </div>
+        <div class="spacer"></div>
+      </div>
+    </section>
+
+    <!-- ═══ LEARN TAB ═══ -->
+    <section id="tab-learn" class="tab">
+      <div class="learn-scroll">
+        <h1 class="learn-title">Learn</h1>
+        <p class="learn-sub">Understand what's happening. Practice during the day.</p>
+
+        <!-- Sub-nav -->
+        <div class="sub-nav" id="sub-nav">
+          <button class="sub-btn active" data-panel="prep">Our Prep</button>
+          <button class="sub-btn" data-panel="toolbox">Toolbox</button>
+          <button class="sub-btn" data-panel="science">Science</button>
+          <button class="sub-btn" data-panel="journey">Journey</button>
+        </div>
+
+        <!-- OUR PREP -->
+        <div id="panel-prep" class="panel active">
+          <p class="panel-intro">You each have a role tonight. Both matter.</p>
+
+          <div class="prep-card" id="prep-courtney">
+            <div class="prep-head"><h3>Courtney's Wind-Down</h3><span class="prep-arrow"></span></div>
+            <div class="prep-body">
+              <ul>
+                <li><strong>90-120 min decompression buffer.</strong> This isn't preference — it's neurological. Your HSP nervous system needs more time to metabolize the day's sensory input.</li>
+                <li><strong>Magnesium glycinate 200-400mg</strong> at bedtime. Crosses the blood-brain barrier, acts on GABA receptors.</li>
+                <li><strong>Acupuncture on co-sleep days</strong> when possible — you've noticed you can sleep at Gene's after sessions.</li>
+                <li><strong>Your job tonight:</strong> let your nervous system do what it does. The ritual will meet it.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="prep-card" id="prep-gene">
+            <div class="prep-head"><h3>Gene's Wind-Down</h3><span class="prep-arrow"></span></div>
+            <div class="prep-body">
+              <ul>
+                <li><strong>Screens off 60-90 min before bed.</strong> Not dimmed. Not face-down. In another room. Gone.</li>
+                <li><strong>That last hour — actually wind down.</strong> Your state is her input. Buzzing from a screen = she feels buzzing.</li>
+                <li><strong>During the night — don't tiptoe.</strong> Don't ask "are you asleep?" Don't offer to leave. Accommodation confirms danger.</li>
+                <li><strong>If she gets up:</strong> Stay. Be still. Be there when she comes back. Calm. Unbothered.</li>
+                <li><strong>Your calm presence IS the treatment.</strong> More powerful than any meditation or supplement.</li>
+              </ul>
+              <button class="btn-text btn-play" data-audio="ex-gene-s-prep">Listen to Gene's guide</button>
+            </div>
+          </div>
+
+          <details class="prep-env">
+            <summary>Environment Setup</summary>
+            <ul>
+              <li>Temperature 65-68°F</li>
+              <li>Complete darkness or very dim warm light</li>
+              <li>White noise or total silence</li>
+              <li>Separate duvets (Scandinavian method)</li>
+              <li>No phone in bedroom (Gene's in another room)</li>
+            </ul>
+          </details>
+        </div>
+
+        <!-- TOOLBOX -->
+        <div id="panel-toolbox" class="panel">
+          <div class="tool-group open">
+            <button class="group-head"><span>In-Bed Practices</span><span class="group-arrow"></span></button>
+            <div class="group-body">
+              <div class="ex-card" data-ex="affect-labeling" data-audio="ex-affect-labeling"><div class="ex-top"><h3>Affect Labeling Check-In</h3><span class="ex-time">2 min</span></div><p>Name what's present — one word each.</p></div>
+              <div class="ex-card" data-ex="synchronized-breathing" data-audio="ex-synchronized-breathing"><div class="ex-top"><h3>Synchronized Breathing</h3><span class="ex-time">5 min</span></div><p>Back-to-back belly breathing at cardiac resonance.</p></div>
+              <div class="ex-card" data-ex="light-body-scan" data-audio="ex-light-body-scan"><div class="ex-top"><h3>Light Body Scan</h3><span class="ex-time">5 min</span></div><p>HSP-adapted gentle noticing. One partner reads aloud.</p></div>
+              <div class="ex-card" data-ex="paradox-game" data-audio="ex-paradox-game"><div class="ex-top"><h3>The Paradox Game</h3><span class="ex-time">3 min</span></div><p>Try to stay awake. Removes performance pressure.</p></div>
+              <div class="ex-card" data-ex="loving-kindness" data-audio="ex-loving-kindness"><div class="ex-top"><h3>Loving-Kindness Exchange</h3><span class="ex-time">3 min</span></div><p>Speak safety phrases to each other.</p></div>
+              <div class="ex-card" data-ex="permission-ritual" data-audio="ex-permission-ritual"><div class="ex-top"><h3>Permission Ritual</h3><span class="ex-time">1 min</span></div><p>Grant each other full permission.</p></div>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <button class="group-head"><span>Reframing Tools</span><span class="group-arrow"></span></button>
+            <div class="group-body">
+              <div class="ex-card" data-ex="gentle-reframe" data-audio="ex-gentle-reframe"><div class="ex-top"><h3>Gentle Reframe</h3><span class="ex-time">2 min</span></div><p>Replace catastrophic thoughts with accurate ones.</p></div>
+              <div class="ex-card" data-ex="cognitive-defusion" data-audio="ex-cognitive-defusion"><div class="ex-top"><h3>Thought Watching</h3><span class="ex-time">1 min</span></div><p>"I'm having the thought that..." Creates distance.</p></div>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <button class="group-head"><span>Daytime Reconditioning</span><span class="group-arrow"></span></button>
+            <div class="group-body">
+              <div class="ex-card" data-ex="stimulus-control" data-audio="ex-stimulus-control"><div class="ex-top"><h3>Positive Bed Time</h3><span class="ex-time">15+ min</span></div><p>Spend positive waking time in bed together.</p></div>
+              <div class="ex-card" data-ex="quiet-window" data-audio="ex-quiet-window"><div class="ex-top"><h3>The Quiet Window</h3><span class="ex-time">Ongoing</span></div><p>No effortful conversation after a set time.</p></div>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <button class="group-head"><span>During the Night</span><span class="group-arrow"></span></button>
+            <div class="group-body">
+              <div class="ex-card" data-ex="20-minute-rule" data-audio="ex-20-minute-rule"><div class="ex-top"><h3>The 20-Minute Rule</h3><span class="ex-time">Guide</span></div><p>What to do when sleep doesn't come.</p></div>
+              <div class="ex-card" data-ex="the-morning-after" data-audio="ex-the-morning-after"><div class="ex-top"><h3>The Morning After</h3><span class="ex-time">2 min</span></div><p>Last night was data. Not a verdict.</p></div>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <button class="group-head"><span>Nervous System Reset</span><span class="group-arrow"></span></button>
+            <div class="group-body">
+              <div class="ex-card" data-ex="vagal-reset" data-audio="ex-vagal-reset"><div class="ex-top"><h3>Vagal Reset</h3><span class="ex-time">3 min</span></div><p>Extended exhale + humming to activate the vagus nerve.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCIENCE -->
+        <div id="panel-science" class="panel">
+          <details class="sci-card"><summary><h3>Why Sleeping Together Matters More Than You Think</h3></summary><div class="sci-body"><p>Women with lower attachment security benefit <strong>more</strong> from sleeping with a partner, not less. The goal isn't learning to sleep alone — it's reconditioning your partner's presence as a "safe base." Every night where Gene is present, calm, and unbothered is a data point that rewrites the association.</p><cite>Troxel et al. (2007); Attachment & Human Development</cite></div></details>
+
+          <details class="sci-card"><summary><h3>Partner-Integrated Treatment</h3></summary><div class="sci-body"><p>Dr. Colleen Carney published the only clinical model for bringing the partner INTO insomnia treatment as an active agent. When the partner understands their role — not fixer, not tiptoe-er, but calm presence — treatment outcomes improve significantly. Gene isn't tolerating a sleep problem. He's actively solving it.</p><cite>Carney et al., Partner-Assisted CBT-I</cite></div></details>
+
+          <details class="sci-card"><summary><h3>Your Hearts Sync When You Sleep Together</h3></summary><div class="sci-body"><p>Couples' heart rhythms measurably synchronize during co-sleep — even when not touching. The synchronized breathing exercise accelerates this. When Gene breathes at cardiac resonance, Courtney's heart rate variability increases within minutes. Two nervous systems becoming one rhythm.</p><cite>Drews et al. (2020), Frontiers in Physiology</cite></div></details>
+
+          <details class="sci-card"><summary><h3>Why Tiptoeing Makes It Worse</h3></summary><div class="sci-body"><p>When Gene over-accommodates — sleeping elsewhere preemptively, asking "should I leave?" — Courtney's nervous system reads a danger signal: "Even HE thinks this is so fragile we need to tiptoe." Accommodation confirms the threat. Gene staying, being calm, treating co-sleep as normal — that sends a safety signal.</p><cite>PACT Institute; Porges Polyvagal Theory</cite></div></details>
+
+          <details class="sci-card"><summary><h3>What's Actually Happening</h3></summary><div class="sci-body"><p>This is <strong>conditioned arousal</strong> — your nervous system learned to associate your partner's presence in bed with wakefulness. You sleep fine alone. You could sleep together early in the relationship. You've slept together in different contexts. The conditioning is specific to the current bed + current routine.</p><cite>Spielman's 3P Model; Penn CBT-I Institute</cite></div></details>
+
+          <details class="sci-card"><summary><h3>The HSP Amplifier</h3></summary><div class="sci-body"><p>Sensory Processing Sensitivity means your nervous system processes all stimuli more deeply. A 2024 study found that HSPs don't have more stress — they have higher <strong>sleep reactivity</strong>. The co-sleep conditioning forms faster and holds stronger. Not a weakness — neurology. The reconditioning just needs to be gentler.</p><cite>Pieroni et al. (2024), Stress and Health</cite></div></details>
+
+          <details class="sci-card"><summary><h3>The Perimenopause Factor</h3></summary><div class="sci-body"><p>Declining progesterone reduces allopregnanolone, which normally enhances GABA — your brain's calming neurotransmitter. Declining estrogen increases cortisol sensitivity. The same anxiety trigger now produces a bigger physiological response than it would have years ago. This isn't psychological. It's neurochemistry.</p><cite>Johns Hopkins Medicine; Stanford Lifestyle Medicine</cite></div></details>
+
+          <details class="sci-card"><summary><h3>Why Naming Feelings Helps</h3></summary><div class="sci-body"><p>fMRI research showed that putting feelings into words activates the prefrontal cortex, which then <strong>inhibits the amygdala</strong> — reducing the fear response by up to 50%. Brief, precise naming works. Analyzing why you feel that way does not.</p><cite>Lieberman et al. (2007), Psychological Science</cite></div></details>
+
+          <details class="sci-card"><summary><h3>Why Trying to Stay Awake Works</h3></summary><div class="sci-body"><p><strong>Paradoxical intention</strong> removes performance anxiety. A 2022 meta-analysis found it significantly reduces sleep onset latency. When you stop trying to sleep, you remove the effort that IS the arousal. Framing it as a game adds playfulness, which signals safety.</p><cite>Jansson-Fröjmark et al. (2022), Journal of Sleep Research</cite></div></details>
+
+          <details class="sci-card"><summary><h3>Your Partner as Medicine</h3></summary><div class="sci-body"><p>Human heart rhythms synchronize during co-sleep. When the calmer partner breathes at cardiac resonance, the other's nervous system naturally entrains within minutes. Partners are "nervous system managers" for each other. The physical proximity activates the attachment system's safety response.</p><cite>Drews et al. (2020); Troxel et al. (2007)</cite></div></details>
+
+          <details class="sci-card"><summary><h3>The Screen Factor</h3></summary><div class="sci-body"><p>Screens elevate sympathetic tone even when you feel relaxed. For an HSP partner, this is detectable. On co-sleep nights, a genuine 60-90 minute screen-free wind-down changes the calmer partner's actual physiological state. Phone in another room — not face-down, <em>gone</em> — is a concrete signal of full presence.</p><cite>PACT Institute; Polyvagal Theory (Porges)</cite></div></details>
+        </div>
+
+        <!-- JOURNEY -->
+        <div id="panel-journey" class="panel">
+          <p class="panel-intro">Phases aren't always linear. Moving backward is normal — it's reconditioning, not a test.</p>
+          <div class="ladder" id="ladder"></div>
+          <div class="log-section">
+            <h3>Session Log</h3>
+            <div id="session-log"><p class="empty-log">Complete a ritual to start tracking.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ EXERCISE OVERLAY ═══ -->
+    <section id="overlay-ex" class="overlay">
+      <div class="overlay-scroll">
+        <button class="btn-back" id="ex-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>
+        <div id="ex-detail"></div>
+      </div>
+    </section>
+
+    <!-- ═══ AUDIO PLAYER (global) ═══ -->
+    <div id="player" class="player hidden">
+      <div class="player-info">
+        <div class="player-title" id="player-title">Playing...</div>
+        <div class="player-time" id="player-time">0:00 / 0:00</div>
+      </div>
+      <div class="player-bar">
+        <div class="player-progress" id="player-progress"></div>
+      </div>
+      <button class="btn-circle btn-sm" id="player-toggle">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="player-icon"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+    </div>
+
+    <!-- ═══ BOTTOM NAV ═══ -->
+    <nav id="nav">
+      <button class="tab-btn active" data-tab="tonight">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <span>Tonight</span>
+      </button>
+      <button class="tab-btn" data-tab="learn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        <span>Learn</span>
+      </button>
+    </nav>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

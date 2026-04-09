@@ -1,0 +1,9 @@
+audio/chunks/
+audio/samples/
+audio/final/
+audio/generate.py
+audio/scripts*.md
+.ux-spec.md
+.claude/
+node_modules/
+audio/__pycache__/
