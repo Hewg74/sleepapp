@@ -193,29 +193,28 @@ function switchPanel(id) {
 }
 
 // ─── Audio Player ────────────────────────────
+const PAUSE_SVG = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+const PLAY_SVG = '<polygon points="5,3 19,12 5,21"/>';
+
 function playAudio(filename, title) {
   if (audio) { audio.pause(); audio = null; }
   audio = new Audio(AUDIO_BASE + filename + '.mp3');
   audioPlaying = true;
 
   const player = document.getElementById('player');
-  const playerTitle = document.getElementById('player-title');
-  const playerTime = document.getElementById('player-time');
-  const playerProgress = document.getElementById('player-progress');
-  const playerIcon = document.getElementById('player-icon');
-
-  playerTitle.textContent = title || filename;
+  document.getElementById('player-title').textContent = title || filename;
+  document.getElementById('player-time').textContent = '0:00 / 0:00';
+  document.getElementById('player-progress').style.width = '0%';
   player.classList.remove('hidden');
-  playerIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+  updatePlayerIcon();
 
   audio.addEventListener('timeupdate', () => {
     if (!audio) return;
     const cur = audio.currentTime;
     const dur = audio.duration || 0;
-    const cm = Math.floor(cur / 60), cs = Math.floor(cur % 60);
-    const dm = Math.floor(dur / 60), ds = Math.floor(dur % 60);
-    playerTime.textContent = `${cm}:${cs.toString().padStart(2, '0')} / ${dm}:${ds.toString().padStart(2, '0')}`;
-    playerProgress.style.width = dur ? (cur / dur * 100) + '%' : '0%';
+    const fmt = (t) => `${Math.floor(t/60)}:${Math.floor(t%60).toString().padStart(2,'0')}`;
+    document.getElementById('player-time').textContent = `${fmt(cur)} / ${fmt(dur)}`;
+    document.getElementById('player-progress').style.width = dur ? (cur / dur * 100) + '%' : '0%';
   });
 
   audio.addEventListener('ended', () => {
@@ -227,17 +226,33 @@ function playAudio(filename, title) {
   audio.play().catch(() => {});
 }
 
+function updatePlayerIcon() {
+  const icon = document.getElementById('player-icon');
+  if (audio && !audio.paused) {
+    icon.innerHTML = PAUSE_SVG;
+  } else {
+    icon.innerHTML = PLAY_SVG;
+  }
+}
+
 function toggleAudio() {
   if (!audio) return;
-  if (audio.paused) {
-    audio.play();
-    audioPlaying = true;
-    document.getElementById('player-icon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-  } else {
-    audio.pause();
-    audioPlaying = false;
-    document.getElementById('player-icon').innerHTML = '<polygon points="5,3 19,12 5,21"/>';
-  }
+  if (audio.paused) { audio.play(); audioPlaying = true; }
+  else { audio.pause(); audioPlaying = false; }
+  updatePlayerIcon();
+}
+
+function seekAudio(e) {
+  if (!audio || !audio.duration) return;
+  const bar = document.getElementById('player-seek');
+  const rect = bar.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  audio.currentTime = pct * audio.duration;
+}
+
+function skipAudio(seconds) {
+  if (!audio) return;
+  audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + seconds));
 }
 
 function stopAudio() {
@@ -463,8 +478,28 @@ function init() {
   document.getElementById('btn-play-20min')?.addEventListener('click', () =>
     playAudio('ex-20-minute-rule', 'The 20-Minute Rule'));
 
-  // Player toggle
+  // Player controls
   document.getElementById('player-toggle').addEventListener('click', toggleAudio);
+  document.getElementById('player-close').addEventListener('click', stopAudio);
+  document.getElementById('player-back15').addEventListener('click', () => skipAudio(-15));
+  document.getElementById('player-fwd15').addEventListener('click', () => skipAudio(15));
+  document.getElementById('player-seek').addEventListener('click', seekAudio);
+
+  // Direct play buttons on exercise cards
+  document.querySelectorAll('.ex-play').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playAudio(btn.dataset.audio, btn.dataset.title);
+    });
+  });
+
+  // Read buttons on exercise cards → open detail overlay
+  document.querySelectorAll('.ex-read').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openExercise(btn.dataset.ex, btn.dataset.audio);
+    });
+  });
 
   // Prep cards toggle
   document.querySelectorAll('.prep-card .prep-head').forEach(head => {
@@ -480,9 +515,10 @@ function init() {
     });
   });
 
-  // Exercise cards → detail overlay
+  // Exercise card body click → open detail (fallback if they miss the buttons)
   document.querySelectorAll('.ex-card').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.ex-play') || e.target.closest('.ex-read')) return;
       openExercise(card.dataset.ex, card.dataset.audio);
     });
   });

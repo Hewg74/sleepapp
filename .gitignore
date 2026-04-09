@@ -7,3 +7,5 @@ audio/scripts*.md
 .claude/
 node_modules/
 audio/__pycache__/
+
+.vercel
