@@ -139,14 +139,21 @@ body{font-family:var(--sans);background:var(--deep);color:var(--primary);-webkit
 .prep-env ul{list-style:none;display:flex;flex-direction:column;gap:8px;padding:4px 0 8px}
 .prep-env li{font-size:12px;color:var(--secondary)}
 
-/* Toolbox groups */
-.tool-group{margin-bottom:8px}
-.group-head{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .3s;color:var(--secondary);font-size:13px;font-weight:400;letter-spacing:.05em;font-family:var(--sans)}
-.group-head:hover{border-color:var(--border-active)}
-.group-arrow{width:7px;height:7px;border-right:1.5px solid var(--dim);border-bottom:1.5px solid var(--dim);transform:rotate(45deg);transition:transform .3s}
-.tool-group.open .group-arrow{transform:rotate(-135deg)}
-.group-body{display:none;padding:8px 0 0}
-.tool-group.open .group-body{display:block}
+/* Timeline toolbox */
+.tl-section{display:flex;align-items:flex-start;gap:14px;margin-top:28px;margin-bottom:12px}
+.tl-section:first-child{margin-top:0}
+.tl-marker{width:32px;height:32px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--dim);border-radius:50%;background:var(--card);border:1px solid var(--border)}
+.tl-marker.tl-main{color:var(--purple-light);border-color:var(--border-active);background:var(--biolum)}
+.tl-label h3{font-family:var(--serif);font-size:16px;font-weight:400;margin-bottom:2px}
+.tl-label p{font-size:12px;color:var(--dim);line-height:1.4}
+.tl-cards{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.tl-divider{text-align:center;padding:8px 0;font-size:11px;color:var(--dim);letter-spacing:.1em;position:relative}
+.tl-divider::before,.tl-divider::after{content:'';position:absolute;top:50%;width:calc(50% - 50px);height:1px;background:var(--border)}
+.tl-divider::before{left:0}
+.tl-divider::after{right:0}
+.ex-card-ritual{border-color:var(--border-active);background:var(--biolum);cursor:pointer}
+.ex-card-ritual h3{color:var(--purple-light)}
+.ex-card-ritual p{color:var(--secondary)}
 
 /* Exercise cards */
 .ex-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:6px;cursor:pointer;transition:all .3s}
