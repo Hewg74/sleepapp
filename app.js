@@ -204,7 +204,8 @@ function playAudio(filename, title) {
     audio = null;
   }
 
-  audio = new Audio(AUDIO_BASE + filename + '.mp3');
+  const src = AUDIO_BASE + filename + '.mp3';
+  audio = new Audio(src);
   audio.preload = 'auto';
 
   const player = document.getElementById('player');
@@ -213,6 +214,13 @@ function playAudio(filename, title) {
   document.getElementById('player-progress').style.width = '0%';
   player.classList.remove('hidden');
 
+  // Wire the download link to this file
+  const dl = document.getElementById('player-download');
+  if (dl) {
+    dl.href = src;
+    dl.setAttribute('download', filename + '.mp3');
+  }
+
   audio.addEventListener('timeupdate', () => {
     if (!audio) return;
     const cur = audio.currentTime;
@@ -220,14 +228,20 @@ function playAudio(filename, title) {
     const fmt = (t) => `${Math.floor(t/60)}:${Math.floor(t%60).toString().padStart(2,'0')}`;
     document.getElementById('player-time').textContent = `${fmt(cur)} / ${fmt(dur)}`;
     document.getElementById('player-progress').style.width = dur ? (cur / dur * 100) + '%' : '0%';
+    updateMediaSessionPosition();
   });
 
-  audio.addEventListener('play', updatePlayerIcon);
-  audio.addEventListener('pause', updatePlayerIcon);
+  audio.addEventListener('play', () => { updatePlayerIcon(); setMediaPlaybackState('playing'); });
+  audio.addEventListener('pause', () => { updatePlayerIcon(); setMediaPlaybackState('paused'); });
   audio.addEventListener('ended', () => {
     player.classList.add('hidden');
     if (audio) { audio.src = ''; audio = null; }
+    setMediaPlaybackState('none');
   });
+
+  // Tell the OS this is a media session so it keeps playing with screen off
+  // and shows lock-screen controls.
+  setupMediaSession(title || filename);
 
   // Play with promise handling
   const playPromise = audio.play();
@@ -239,6 +253,50 @@ function playAudio(filename, title) {
       updatePlayerIcon();
     });
   }
+}
+
+// ─── Media Session API (lock-screen / background playback) ──
+function setupMediaSession(title) {
+  if (!('mediaSession' in navigator)) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: title || 'DriftTogether',
+      artist: 'DriftTogether',
+      album: 'Sleep Exercises'
+    });
+    navigator.mediaSession.setActionHandler('play', () => {
+      if (audio && audio.paused) audio.play().catch(() => {});
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      if (audio && !audio.paused) audio.pause();
+    });
+    navigator.mediaSession.setActionHandler('seekbackward', (d) => skipAudio(-(d.seekOffset || 15)));
+    navigator.mediaSession.setActionHandler('seekforward', (d) => skipAudio(d.seekOffset || 15));
+    navigator.mediaSession.setActionHandler('seekto', (d) => {
+      if (audio && typeof d.seekTime === 'number') audio.currentTime = d.seekTime;
+    });
+    navigator.mediaSession.setActionHandler('stop', () => stopAudio());
+  } catch (e) {
+    console.warn('MediaSession setup failed:', e);
+  }
+}
+
+function setMediaPlaybackState(state) {
+  if ('mediaSession' in navigator) {
+    try { navigator.mediaSession.playbackState = state; } catch (e) {}
+  }
+}
+
+function updateMediaSessionPosition() {
+  if (!('mediaSession' in navigator) || !audio || !audio.duration) return;
+  if (typeof navigator.mediaSession.setPositionState !== 'function') return;
+  try {
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate || 1,
+      position: audio.currentTime
+    });
+  } catch (e) {}
 }
 
 function updatePlayerIcon() {
@@ -279,6 +337,7 @@ function stopAudio() {
   if (audio) { audio.pause(); audio = null; }
   audioPlaying = false;
   document.getElementById('player').classList.add('hidden');
+  setMediaPlaybackState('none');
 }
 
 // ─── Ritual ──────────────────────────────────
@@ -295,6 +354,22 @@ function startRitual() {
 
   ritualAudio = new Audio(AUDIO_BASE + 'ritual.mp3');
   ritualAudio.play().catch(() => {});
+
+  // Lock-screen / background playback for the ritual too
+  if ('mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: 'Evening Ritual',
+        artist: 'DriftTogether',
+        album: 'Sleep Exercises'
+      });
+      navigator.mediaSession.setActionHandler('play', () => ritualAudio && ritualAudio.paused && ritualAudio.play().catch(() => {}));
+      navigator.mediaSession.setActionHandler('pause', () => ritualAudio && !ritualAudio.paused && ritualAudio.pause());
+      navigator.mediaSession.playbackState = 'playing';
+    } catch (e) {}
+  }
+  ritualAudio.addEventListener('play', () => setMediaPlaybackState('playing'));
+  ritualAudio.addEventListener('pause', () => setMediaPlaybackState('paused'));
 
   function tick() {
     if (!ritualAudio) return;

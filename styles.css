@@ -220,7 +220,7 @@ cite{font-size:11px;color:var(--dim);font-style:italic;display:block}
 .player-info{flex:1;min-width:0}
 .player-title{font-size:13px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .player-time{font-size:10px;color:var(--dim);margin-top:2px;font-variant-numeric:tabular-nums}
-.player-close{background:none;border:none;color:var(--dim);cursor:pointer;padding:4px;transition:color .3s}
+.player-close{background:none;border:none;color:var(--dim);cursor:pointer;padding:4px;transition:color .3s;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .player-close:hover{color:var(--primary)}
 .player-seek{width:100%;height:24px;display:flex;align-items:center;cursor:pointer;margin-bottom:8px;position:relative}
 .player-seek::before{content:'';position:absolute;left:0;right:0;top:50%;height:3px;transform:translateY(-50%);background:rgba(255,255,255,.08);border-radius:2px}
