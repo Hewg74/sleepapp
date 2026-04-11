@@ -197,16 +197,21 @@ const PAUSE_SVG = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" w
 const PLAY_SVG = '<polygon points="5,3 19,12 5,21"/>';
 
 function playAudio(filename, title) {
-  if (audio) { audio.pause(); audio = null; }
+  // Stop any previous audio
+  if (audio) {
+    try { audio.pause(); } catch (e) {}
+    audio.src = '';
+    audio = null;
+  }
+
   audio = new Audio(AUDIO_BASE + filename + '.mp3');
-  audioPlaying = true;
+  audio.preload = 'auto';
 
   const player = document.getElementById('player');
   document.getElementById('player-title').textContent = title || filename;
   document.getElementById('player-time').textContent = '0:00 / 0:00';
   document.getElementById('player-progress').style.width = '0%';
   player.classList.remove('hidden');
-  updatePlayerIcon();
 
   audio.addEventListener('timeupdate', () => {
     if (!audio) return;
@@ -217,18 +222,29 @@ function playAudio(filename, title) {
     document.getElementById('player-progress').style.width = dur ? (cur / dur * 100) + '%' : '0%';
   });
 
+  audio.addEventListener('play', updatePlayerIcon);
+  audio.addEventListener('pause', updatePlayerIcon);
   audio.addEventListener('ended', () => {
-    audioPlaying = false;
     player.classList.add('hidden');
-    audio = null;
+    if (audio) { audio.src = ''; audio = null; }
   });
 
-  audio.play().catch(() => {});
+  // Play with promise handling
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      updatePlayerIcon();
+    }).catch((err) => {
+      console.warn('Audio play failed:', err);
+      updatePlayerIcon();
+    });
+  }
 }
 
 function updatePlayerIcon() {
   const icon = document.getElementById('player-icon');
-  if (audio && !audio.paused) {
+  if (!icon) return;
+  if (audio && !audio.paused && !audio.ended) {
     icon.innerHTML = PAUSE_SVG;
   } else {
     icon.innerHTML = PLAY_SVG;
@@ -237,9 +253,13 @@ function updatePlayerIcon() {
 
 function toggleAudio() {
   if (!audio) return;
-  if (audio.paused) { audio.play(); audioPlaying = true; }
-  else { audio.pause(); audioPlaying = false; }
-  updatePlayerIcon();
+  if (audio.paused) {
+    const p = audio.play();
+    if (p) p.catch((err) => console.warn('Toggle play failed:', err));
+  } else {
+    audio.pause();
+  }
+  // Icon updates via play/pause event listeners
 }
 
 function seekAudio(e) {
