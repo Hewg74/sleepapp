@@ -1,7 +1,10 @@
 audio/chunks/
 audio/samples/
 audio/final/
+audio/original/
+audio/temp/
 audio/generate.py
+audio/extend_pauses.py
 audio/scripts*.md
 .ux-spec.md
 .claude/
