@@ -62,6 +62,8 @@ body{font-family:var(--sans);background:var(--deep);color:var(--primary);-webkit
 .tonight-action{text-align:center;width:100%;max-width:300px;margin-top:48px}
 .ritual-meta{font-family:var(--serif);font-size:16px;color:var(--secondary);margin-top:20px}
 .tonight-phase{font-size:11px;color:var(--dim);margin-top:12px;letter-spacing:.1em}
+.btn-download-ritual{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:12px;color:var(--dim);text-decoration:none;letter-spacing:.05em;transition:color .3s}
+.btn-download-ritual:hover{color:var(--primary)}
 
 /* Ready Check */
 .state-scroll{width:100%;max-width:400px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:24px 0;max-height:100%}
@@ -238,6 +240,8 @@ cite{font-size:11px;color:var(--dim);font-style:italic;display:block}
 .ex-play svg{flex-shrink:0}
 .ex-read{background:none;border:1px solid var(--border);color:var(--secondary)}
 .ex-read:hover{border-color:var(--border-active);color:var(--primary)}
+.ex-download{padding:7px 14px;border-radius:8px;font-size:12px;font-family:var(--sans);cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--border);color:var(--secondary);text-decoration:none}
+.ex-download:hover{border-color:var(--border-active);color:var(--primary)}
 
 /* Scrollbar */
 ::-webkit-scrollbar{width:3px}
