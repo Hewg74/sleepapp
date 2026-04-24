@@ -460,7 +460,13 @@ function openExercise(exId, audioFile) {
     <p class="ex-detail-intro">${ex.intro}</p>`;
 
   if (audioFile) {
-    html += `<button class="btn-pill" style="margin-bottom:24px" onclick="playAudio('${audioFile}','${ex.title}')"><span>Play Audio Guide</span></button>`;
+    html += `<div style="display:flex;gap:10px;align-items:center;margin-bottom:24px;flex-wrap:wrap">
+      <button class="btn-pill" onclick="playAudio('${audioFile}','${ex.title.replace(/'/g, "\\'")}')"><span>Play Audio Guide</span></button>
+      <a class="ex-download-link" href="${AUDIO_BASE}${audioFile}.mp3" download="${audioFile}.mp3">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+        <span>Download</span>
+      </a>
+    </div>`;
   }
 
   for (const s of ex.steps) {
@@ -586,6 +592,24 @@ function init() {
       e.stopPropagation();
       playAudio(btn.dataset.audio, btn.dataset.title);
     });
+  });
+
+  // Inject a download icon beside every .ex-play so each track has a direct
+  // download without needing to press play first.
+  document.querySelectorAll('.ex-actions').forEach(actions => {
+    const playBtn = actions.querySelector('.ex-play');
+    if (!playBtn || !playBtn.dataset.audio) return;
+    if (actions.querySelector('.ex-dl')) return; // already injected
+    const file = playBtn.dataset.audio;
+    const title = playBtn.dataset.title || file;
+    const a = document.createElement('a');
+    a.className = 'ex-dl';
+    a.href = AUDIO_BASE + file + '.mp3';
+    a.setAttribute('download', file + '.mp3');
+    a.title = 'Download ' + title;
+    a.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>';
+    a.addEventListener('click', (e) => e.stopPropagation());
+    actions.appendChild(a);
   });
 
   // Read buttons on exercise cards → open detail overlay

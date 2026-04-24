@@ -230,8 +230,18 @@ cite{font-size:11px;color:var(--dim);font-style:italic;display:block}
 .player-btn:hover{color:var(--primary)}
 .player-btn-main{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--primary)}
 
+/* Ritual download link (landing screen) */
+.ritual-download{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--dim);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;transition:color .3s,border-color .3s;font-family:var(--sans)}
+.ritual-download:hover{color:var(--primary);border-color:var(--border-active)}
+
+/* Exercise download inside the detail overlay */
+.ex-download-link{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--secondary);text-decoration:none;transition:color .3s,border-color .3s;font-family:var(--sans)}
+.ex-download-link:hover{color:var(--primary);border-color:var(--border-active)}
+
 /* Exercise card actions */
-.ex-actions{display:flex;gap:8px;margin-top:10px}
+.ex-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
+.ex-dl{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);color:var(--dim);text-decoration:none;transition:color .3s,border-color .3s}
+.ex-dl:hover{color:var(--primary);border-color:var(--border-active)}
 .ex-play,.ex-read{padding:7px 14px;border-radius:8px;font-size:12px;font-family:var(--sans);cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:5px}
 .ex-play{background:var(--purple);background:linear-gradient(135deg,var(--purple),#6366f1);color:white;border:none;font-weight:500}
 .ex-play:hover{opacity:.85}
