@@ -234,6 +234,17 @@ cite{font-size:11px;color:var(--dim);font-style:italic;display:block}
 .ritual-download{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--dim);text-decoration:none;padding:6px 10px;border:1px solid var(--border);border-radius:8px;transition:color .3s,border-color .3s;font-family:var(--sans)}
 .ritual-download:hover{color:var(--primary);border-color:var(--border-active)}
 
+/* Ruby meditation (secondary option on Tonight home) */
+.tonight-ruby{margin-top:36px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 24px}
+.ruby-divider{width:48px;height:1px;background:var(--border);margin-bottom:18px}
+.ruby-eyebrow{font-family:var(--serif);font-size:15px;color:var(--primary);letter-spacing:.02em}
+.ruby-sub{font-size:11px;color:var(--dim);margin-top:-2px}
+.ruby-actions{display:flex;gap:8px;margin-top:10px}
+.ruby-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;font-size:12px;font-family:var(--sans);cursor:pointer;transition:all .3s;text-decoration:none;background:var(--card);border:1px solid var(--border);color:var(--primary)}
+.ruby-btn:hover{background:var(--card-hover);border-color:var(--border-active)}
+.ruby-btn-ghost{background:none;color:var(--secondary)}
+.ruby-btn-ghost:hover{color:var(--primary)}
+
 /* Exercise download inside the detail overlay */
 .ex-download-link{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--secondary);text-decoration:none;transition:color .3s,border-color .3s;font-family:var(--sans)}
 .ex-download-link:hover{color:var(--primary);border-color:var(--border-active)}

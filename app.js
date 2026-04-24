@@ -579,6 +579,10 @@ function init() {
   document.getElementById('btn-play-20min')?.addEventListener('click', () =>
     playAudio('ex-20-minute-rule', 'The 20-Minute Rule'));
 
+  // Ruby meditation (Tonight home)
+  document.getElementById('btn-play-ruby')?.addEventListener('click', () =>
+    playAudio('ruby', 'For Ruby'));
+
   // Player controls
   document.getElementById('player-toggle').addEventListener('click', toggleAudio);
   document.getElementById('player-close').addEventListener('click', stopAudio);
