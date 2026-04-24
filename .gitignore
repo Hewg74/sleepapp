@@ -1,4 +1,5 @@
 audio/chunks/
+audio/*-chunks/
 audio/samples/
 audio/final/
 audio/original/
